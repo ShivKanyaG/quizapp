@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  psql-db:
+    image: postgres
+    container_name: psql-db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=QuizApp
+    ports:
+      - '5432:5432'
+
+  recipe:
+    container_name: quiz_app
+    image: shivkanyag/test-application:1.0
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile
+    ports:
+      - '8085:8082'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://psql-db:5432/QuizApp
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - psql-db
